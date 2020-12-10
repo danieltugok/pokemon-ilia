@@ -2,53 +2,28 @@
   <div id="app">
     <div id="nav">
 
+        <router-link to="/">{{$t('global.home')}}</router-link> |
+        <router-link to="/about">{{$t('global.credits')}}</router-link>
+        <router-link to="/detail">{{$t('global.credits')}}</router-link>
 
-        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-  <div class="carousel-inner">
-    <div class="carousel-item active">
-      987987987987987
+        <br><br>
+
+        <a href="#" @click.prevent="setLanguage('en')">en</a> | 
+        <a href="#" @click.prevent="setLanguage('br')">pt</a><br>
+
+        <br><br>
     </div>
-    <div class="carousel-item">
-      kjhkjhkjhkjh
-    </div>
-    <div class="carousel-item">
-      000000000000000000
-    </div>
-  </div>
-  <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="sr-only">Previous</span>
-  </a>
-  <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="sr-only">Next</span>
-  </a>
-</div>
-      <a href="#" @click.prevent="setLanguage('en')">en</a> <br>
-      <a href="#" @click.prevent="setLanguage('br')">pt</a><br>
-      {{$t('auth.recover_password')}}<br><br><br><br>
 
-      <a href="#" @click.prevent="getPokemonList()">{{ this.url }}</a><br><br><br><br>
-
-      <input type="text" v-model="inputText">
-
-      {{ inputText }}
-      
-
-      <a href="#" @click.prevent="getPokemonByName()">Buscar por nome</a>
-
-      <br><br><br><br>
-
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-
-      <br><br><br>
-
-
-      {{ pokemons }}
-    </div>
-    <router-view/>
-
+    <div id="content">
+        <router-view 
+            :pokemons="pokemons" 
+            :pokemonId="pokemonId" 
+            @searchName="getPokemonByName($event)" 
+            @searchList="getPokemonList($event)" 
+            @checkDetails="selectedPokemonId($event)"
+            @sortPokemonList="sortPokemons($event)"
+        />    
+    </div>  
 
   </div>
 </template>
@@ -56,74 +31,103 @@
 <script>
 import Vue from 'vue'
 import axios from 'axios'
+import router from './router'
+
 // import ApiService from './services/api.service'
 
 export default {
 
     data() { 
         return { 
-            url: process.env.VUE_APP_TESTE,
-            inputText: null,
             pokemons: null,
-            dismissSecs: 10,
-        dismissCountDown: 0,
-        showDismissibleAlert: false
+            pokemonId: null,
+
         }
     },
 
-    methods: {
+    mounted (){
+        this.getPokemonList()
+    },    
 
-        countDownChanged(dismissCountDown) {
-        this.dismissCountDown = dismissCountDown
-      },
-      showAlert() {
-        this.dismissCountDown = this.dismissSecs
-      },
+    methods: {
 
         setLanguage( locale ) {
             Vue.i18n.set( locale )
         },
 
-        getPokemonList: async function() {
+        selectedPokemonId ( selectedPokemonId ) {
+            console.log(selectedPokemonId);
+            this.pokemonId = selectedPokemonId
 
+            router.push('detail')
+
+        },
+
+        async getPokemonList() {
             var params = {
                 page: 1,
-                pageSize: 1000,
+                pageSize: 10,
                 supertype: 'pokemon'                
             }
 
             try {
                 const response = await axios.get('/cards', {params});
-
-                console.log(response);
                 this.pokemons = response.data.cards;
-
+                this.sortPokemons("ASC");
             } catch (error) {
                 console.error(error);
             }
-
-
         },
 
-        getPokemonByName: async function() {
-
+        async getPokemonByName( object ) {
             var params = {
                 page: 1,
-                pageSize: 1000,
-                name: this.inputText                
+                pageSize: 10,
+                name: object,
+                supertype: 'pokemon'                 
             }
 
             try{
                 const response = await axios.get(`/cards`, {params});
-                console.log(response);
                 this.pokemons = response.data.cards;
-
+                this.sortPokemons("ASC");
             } catch (error) {
                 console.log(error);
             }
-
-
         },
+
+        sortPokemons (sort = "ASC") {            
+
+            if ( sort == "ASC") {
+                this.pokemons.sort(function (a, b) {
+                    if (a.name > b.name) {
+                        return 1;
+                    }
+                    if (a.name < b.name) {
+                        return -1;
+                    }
+                    return 0;
+                });
+
+                return
+
+            } 
+
+            this.pokemons.sort(function (a, b) {
+                if (a.name > b.name) {
+                    return -1;
+                }
+                if (a.name < b.name) {
+                    return 1;
+                }
+                return 0;
+            });
+
+
+            
+        }
+
+        
                
     }
 
@@ -132,10 +136,7 @@ export default {
 </script>
 
 <style lang="scss">
-// @import './assets/styles/variables';
 @import './assets/styles/bootstrap';
-@import 'node_modules/bootstrap/scss/bootstrap.scss';
-@import 'node_modules/bootstrap-vue/src/index.scss';
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
