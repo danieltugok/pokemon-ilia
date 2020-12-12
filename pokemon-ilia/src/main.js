@@ -18,9 +18,6 @@ axios.defaults.baseURL = process.env.VUE_APP_ROOT_API;
 import VueAxios from 'vue-axios'
 Vue.use(VueAxios, axios)
 
-// Organizando as conexões com API dentro do Arquivo ApiService
-// import ApiService from './services/api.service'
-// ApiService.init(process.env.VUE_APP_ROOT_API);
 
 // Language Config i18n
 import './i18n/index'

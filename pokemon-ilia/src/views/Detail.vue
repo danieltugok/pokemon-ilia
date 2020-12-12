@@ -1,13 +1,8 @@
 <template>
     <div class="details">
-        <HelloWorld msg="Bem-vindo"/>
-
-
         <h1>DETALHES</h1>
         <br>
-
-
-        <b-container v-if="pokemonInfo">    
+        <b-container v-if="pokemonInfo"> 
 
             <b-card no-body class="overflow-hidden">
                 <b-row no-gutters>
@@ -18,8 +13,16 @@
                     <b-card-body :title="pokemonInfo.name">
                         <b-card-text>
                             id: {{pokemonInfo.id}}<br>
+
+                            <img id="types" :class="strengthSprite(pokemonInfo.types, true)" src="https://www.w3schools.com/css/img_trans.gif" width="1" height="1">
                             types: {{pokemonInfo.types}}<br>
-                            Resistencia: {{pokemonInfo.resistances}}<br>
+
+                            <div v-if="pokemonInfo.resistances">
+                                <img id="resistance" :class="strengthSprite(pokemonInfo.resistances)" src="https://www.w3schools.com/css/img_trans.gif" width="1" height="1">
+                                Resistencia: {{pokemonInfo.resistances}}<br>
+                            </div>
+
+                            <img id="weakness" :class="strengthSprite(pokemonInfo.weaknesses)" src="https://www.w3schools.com/css/img_trans.gif" width="1" height="1">
                             weaknesses: {{pokemonInfo.weaknesses}}<br>
                             <br>
 
@@ -52,17 +55,12 @@
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
 import axios from 'axios'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
 
     name: 'Details',
-
-    components: {
-        HelloWorld
-    },
     
     props: {
 
@@ -70,6 +68,19 @@ export default {
             type: String,
             default: null
         },
+
+    },
+
+    computed: {
+        ...mapGetters([
+            'pokemonIds'
+        ]),
+
+        pokemonIds() {
+            console.log('this.$store.getterspokemonIds', this.$store.getters[ 'pokemonIds']);
+            return this.$store.getters[ 'pokemonIds']
+
+        }
 
     },
 
@@ -82,12 +93,22 @@ export default {
 
     mounted() {
         this.SelectedPokemonId();
+        this.saveIdPokemon(this.pokemonId);
         
     },
 
+
+
     methods: {
+        ...mapActions([
+            // 'decrement',
+        ]),
+
+        saveIdPokemon( pokemonId ){
+            this.$store.commit( 'addPokemonIdToArray', pokemonId );
+        },
+
         SelectedPokemonId: async function(){
-            console.log('PokemonId: ', this.pokemonId);
 
             var params = {
                 id: this.pokemonId                
@@ -100,13 +121,44 @@ export default {
             } catch (error) {
                 console.log(error);
             }
+        },
 
+        strengthSprite( typeOf , himselfType = false) {
 
-        }
+            var type = typeOf[0].type
+
+            if ( himselfType ) {
+                type = typeOf[0];
+            }
+
+            switch (type) {
+                case 'Colorless':
+                    return 'colorless';
+                case 'Fire':
+                    return 'fire';
+                case 'Darkness':
+                    return 'darkness';
+                case 'Metal':
+                    return 'metal';
+                case 'Dragon':
+                    return 'dragon';
+                case 'Fairy':
+                    return 'fairy';
+                case 'Fighting':
+                    return 'fighting';
+                case 'Grass':
+                    return 'grass';
+                case 'Lightning':
+                    return 'lightning';
+                case 'Psychic':
+                    return 'psychic';
+                case 'Water':
+                    return 'water';
+                default:
+                    return 'No';
+            }
+        },
     }
-
-
-
 
 }
 
@@ -114,6 +166,9 @@ export default {
 
 
 <style >
+
+    
+
 
 
 </style>

@@ -1,0 +1,85 @@
+html, body {
+    background-color: #333;
+    color: white;
+    min-height: 100vh;
+}
+
+body {
+    text-shadow: 0 0.05rem 0.1rem rgba(0, 0, 0, .5);
+    box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
+}
+
+#types {
+    width: 93px;
+    height: 93px;
+    border-radius: 100%;
+}
+
+#weakness {
+    width: 93px;
+    height: 93px;
+    border-radius: 100%;
+}
+
+#resistance {
+    width: 93px;
+    height: 93px;
+    border-radius: 100%;
+}
+
+/* TYPES */
+.fire {
+    background: url(/img/weakness.619dbf43.png) -254px -27px;
+}
+
+.darkness {
+    background: url(/img/weakness.619dbf43.png) -178px -481px;
+}
+
+.dragon {
+    background: url(/img/weakness.619dbf43.png) -481px -279px;
+}
+
+.fairy {
+    background: url(/img/weakness.619dbf43.png) -77px -405px;
+}
+
+.fighting {
+    background: url(/img/weakness.619dbf43.png) -380px -77px;
+}
+
+.grass {
+    background: url(/img/weakness.619dbf43.png) -431px -405px;
+}
+
+.lightning {
+    background: url(/img/weakness.619dbf43.png) -453px -163px;
+}
+
+.psychic {
+    background: url(/img/weakness.619dbf43.png) -27px -279px;
+}
+
+.water {
+    background: url(/img/weakness.619dbf43.png) -329px -481px;
+}
+
+.metal {
+    background: url(/img/weakness.619dbf43.png) -48px -163px;
+}
+
+.colorless {
+    background: url(/img/weakness.619dbf43.png) -128px -77px;
+}
+
+
+.modal-backdrop{
+    opacity: 0.8;
+}
+
+
+@media only screen and (max-width: 768px) {
+    body {
+      background-color: lightblue;
+    }
+  }

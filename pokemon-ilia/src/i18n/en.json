@@ -1,8 +1,13 @@
 {
     "global": {    
         "home": "Home",
-        "credits": "Credits",
-        "searchByName":"Search by name"
+        "detail": "Detail",
+        "about": "About",
+        "historic": "Historic",
+        "searchByName":"Search by name",
+        "clear":"Clear",
+        "sort":"Sort",
+        "checkDetail":"Check detail..."
 
     }  
 }

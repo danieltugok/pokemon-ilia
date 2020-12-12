@@ -1,64 +1,81 @@
 <template>
 
-    <b-container class="home">
-        
-        <HelloWorld msg="Welcome to Your Vue.js App"/>        
+    <div>
 
-        
-        <form v-on:submit.prevent="getPokemonByName()">
-            <b-form-input id="type-text" type="text" v-model="searchName"></b-form-input>
+        <b-container class="home">           
+            
+            <form v-on:submit.prevent="getPokemonByName()">
+                <!-- <b-form-input id="type-text" type="text" v-model="searchName">
+                </b-form-input> -->
 
-            <b-button variant="outline-primary" type="submit">
-                {{$t('global.searchByName')}}
-            </b-button>
-        </form>
+                <div>
+                    <div>
+                        <b-input-group size="lg" class="mb-2">
+                            <b-input-group-prepend is-text>
+                                <b-icon icon="search"></b-icon>
+                            </b-input-group-prepend>
+                            <b-form-input id="type-text" type="text" v-model="searchName" placeholder="Search card"></b-form-input>
+                        </b-input-group>
+                    </div>
 
-            <b-button variant="primary" @click.prevent="getPokemonList()">
-                Clear
-            </b-button>
-
-            <b-button variant="primary" @click.prevent="sortPokemonList()">
-                SORT
-            </b-button>
-
-
-
-        <br><br>  
-
-        
-        <b-container class="bv-example-row" v-if="pokemons">
-            <b-row>
-                <b-col v-for="pokemon in pokemons" :key="pokemon.id" sm>
-                    <a href="#" @click.prevent="checkDetails(pokemon.id)">
-                        <img :src="pokemon.imageUrl" :alt="pokemon.name">
-                        <p>{{pokemon.name}}</p>
-                        <p>{{pokemon.id}}</p>
-                        <p>{{pokemon.types}}</p>
-                    
-                        <b-button variant="outline-primary">
-                            Ver Detalhes...
+                    <div>
+                        <b-button variant="outline-primary" type="submit">
+                            {{$t('global.searchByName')}}
                         </b-button>
-                    </a>
-                    
-                </b-col>
+                    </div>
 
-            </b-row>
+                </div>
+            </form>
+
+                <b-button variant="primary" @click.prevent="getPokemonList()">{{$t('global.clear')}}</b-button>
+                <b-button variant="primary" @click.prevent="sortPokemonList()">{{$t('global.sort')}}</b-button>
+
+            <br><br>        
+
+            <PokemonCard class="pokemon-cards-list" :pokemons="pokemons" @checkDetails="checkDetails($event)"/>
+
         </b-container>
 
-    </b-container>
+        <div class="carousel-cards">
+            <b-carousel
+                id="carousel-1"
+                v-model="slide"
+                :interval="4000"
+                controls
+                background="#ababab"
+                img-width="1024"
+                img-height="480"
+                style="text-shadow: 1px 1px 2px #333;"
+                @sliding-start="onSlideStart"
+                @sliding-end="onSlideEnd"
+                >
+
+                <b-carousel-slide v-for="pokemon in pokemons" :key="pokemon.id">
+                    <template #img>
+                        <img
+                            class="d-block img-fluid w-100"
+                            :src="pokemon.imageUrl"
+                            :alt="pokemon.name"
+                        >
+                    </template>
+                </b-carousel-slide>
+
+            </b-carousel>
+
+        </div>
+    </div>
 
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import PokemonCard from '@/components/PokemonCard.vue'
 
 export default {
 
     name: 'Home',
 
     components: {
-        HelloWorld
+        PokemonCard
     },
     
     props: {
@@ -72,12 +89,20 @@ export default {
     data () {
         return {
             searchName: null,
-            sort: "ASC"
+            sort: "ASC",
+            slide: 0,
+            sliding: null
 
         }
     },
 
     methods: {
+        onSlideStart() {
+            this.sliding = true
+        },
+        onSlideEnd() {
+            this.sliding = false
+        },
         getPokemonByName() {
             this.$emit('searchName', this.searchName)
         },
@@ -102,7 +127,7 @@ export default {
 
         checkDetails( pokemonId ) {
             this.$emit('checkDetails', pokemonId)
-        }
+        }    
 
         
 
@@ -121,4 +146,27 @@ export default {
     .col-sm{
         margin-bottom: 50px;
     }
+
+
+    @media only screen and (min-width: 768px) {
+        .carousel-cards{
+            display: none;
+        }
+
+        .pokemon-cards-list{
+            display: block;
+        }
+    }
+
+    @media only screen and (max-width: 768px) {
+        .carousel-cards{
+            display: block;
+        }
+
+        .pokemon-cards-list{
+            display: none;
+        }
+    }
+
+    
 </style>
