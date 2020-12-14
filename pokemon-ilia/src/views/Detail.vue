@@ -1,30 +1,43 @@
 <template>
     <div class="details">
-        <h1>DETALHES</h1>
+        <h1>{{$t('global.detail')}}</h1>
         <br>
         <b-container v-if="pokemonInfo"> 
 
             <b-card no-body class="overflow-hidden">
-                <b-row no-gutters>
-                    <b-col md="6">
-                    <b-card-img :src="pokemonInfo.imageUrlHiRes" :alt="pokemonInfo.name" class="rounded-0"></b-card-img>
-                    </b-col>
-                    <b-col md="6">
-                    <b-card-body :title="pokemonInfo.name">
-                        <b-card-text>
-                            id: {{pokemonInfo.id}}<br>
+                <b-row no-gutters class="justify-content-md-center">
 
-                            <img id="types" :class="strengthSprite(pokemonInfo.types, true)" src="https://www.w3schools.com/css/img_trans.gif" width="1" height="1">
-                            types: {{pokemonInfo.types}}<br>
+                    <b-col md="4">
+                        <Loading v-if="isLoading"/> 
+
+                        <b-card-img :src="pokemonInfo.imageUrlHiRes" :alt="pokemonInfo.name" class="rounded-0"></b-card-img>
+                    </b-col>
+
+                    <b-col md="4">
+                    <b-card-body>
+
+                        <div class="title-card">
+                            <img id="types" :class="strengthSprite(pokemonInfo.types, true)" src="@/assets/img_trans.gif" width="1" height="1">
+                            
+                            <h2>{{pokemonInfo.name}}</h2> <br>
+                            <span>({{pokemonInfo.id}})</span>                            
+                            <br>
+                        </div>
+                        
+                        <b-card-text class="card-text">
+                            <!-- types: {{pokemonInfo.types}}<br> -->
 
                             <div v-if="pokemonInfo.resistances">
-                                <img id="resistance" :class="strengthSprite(pokemonInfo.resistances)" src="https://www.w3schools.com/css/img_trans.gif" width="1" height="1">
-                                Resistencia: {{pokemonInfo.resistances}}<br>
+                                <h2>Resistencia</h2>
+                                <img id="resistance" :class="strengthSprite(pokemonInfo.resistances)" src="@/assets/img_trans.gif" width="1" height="1">
+                                <span>{{pokemonInfo.resistances[0].value}}</span>
                             </div>
 
-                            <img id="weakness" :class="strengthSprite(pokemonInfo.weaknesses)" src="https://www.w3schools.com/css/img_trans.gif" width="1" height="1">
-                            weaknesses: {{pokemonInfo.weaknesses}}<br>
-                            <br>
+                            <div v-if="pokemonInfo.weaknesses">
+                                <h2>weaknesses</h2>
+                                <img id="weakness" :class="strengthSprite(pokemonInfo.weaknesses)" src="@/assets/img_trans.gif" width="1" height="1">
+                                <span>{{pokemonInfo.weaknesses[0].value}}</span>
+                            </div>
 
                             <b-button v-b-modal.modal-1>Attacks</b-button>
 
@@ -40,13 +53,15 @@
             <b-modal id="modal-1" :title="pokemonInfo.name" hide-footer>
                 <ul>
                     <li v-for="attack in pokemonInfo.attacks" :key="attack.name">
-                        <p>Mana: {{attack.convertedEnergyCost}}</p>
-                        <p>Nome: {{attack.name}}</p>
-                        <p>Dano: {{attack.damage}}</p>
-                        <p>Descrição: {{attack.text}}</p>
+                        <h3>{{attack.name}}</h3>
+                        <div class="flex">
+                            <p>Mana: {{attack.convertedEnergyCost}}</p>
+                            <p>Dano: {{attack.damage}}</p>
+                        </div>
+                        <p>{{attack.text}}</p>
+                        <hr>
                     </li>
                 </ul>
-                <p class="my-4">Hello from modal!</p>
             </b-modal>
         </div>
 
@@ -56,11 +71,17 @@
 
 <script>
 import axios from 'axios'
+import Loading from '@/components/Loading.vue'
+
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
 
     name: 'Details',
+
+    components: {
+        Loading,
+    },
     
     props: {
 
@@ -73,13 +94,12 @@ export default {
 
     computed: {
         ...mapGetters([
-            'pokemonIds'
+            'pokemonIds',
+            'isLoading'
         ]),
 
         pokemonIds() {
-            console.log('this.$store.getterspokemonIds', this.$store.getters[ 'pokemonIds']);
             return this.$store.getters[ 'pokemonIds']
-
         }
 
     },
@@ -101,7 +121,7 @@ export default {
 
     methods: {
         ...mapActions([
-            // 'decrement',
+            'setLoading'
         ]),
 
         saveIdPokemon( pokemonId ){
@@ -110,6 +130,8 @@ export default {
 
         SelectedPokemonId: async function(){
 
+            this.setLoading(true);
+
             var params = {
                 id: this.pokemonId                
             }
@@ -117,6 +139,7 @@ export default {
             try{
                 const response = await axios.get(`/cards`, {params});
                 this.pokemonInfo = response.data.cards[0];
+                this.setLoading(false);
 
             } catch (error) {
                 console.log(error);
@@ -165,10 +188,39 @@ export default {
 </script>
 
 
-<style >
+<style lang="scss">
 
-    
+    #modal-1{
+        color: black;
 
+        ul{
+            list-style: none;
+            padding-left: 0;
+        }
+    }
+
+    .flex{
+        display: flex;    
+
+    }
+
+    .card {
+        border: none;
+        background-color: transparent;
+    }
+
+    .card-body {
+        text-align: left;
+    }
+
+    .title-card{
+        display: flex;
+        align-items: center;
+
+        span{
+            margin-left: 10px;
+        }
+    }  
 
 
 </style>

@@ -1,6 +1,8 @@
 <template>
   <div id="app">
 
+    
+
     <b-navbar toggleable="lg" type="dark" variant="dark">        
 
         <router-link class="navbar-brand" to="/">Pokemon ília</router-link>
@@ -16,18 +18,15 @@
                     <router-link to="/historic">{{$t('global.historic')}}</router-link>
                 </b-nav-item>
                 <b-nav-item href="#">
-                    <router-link to="/about">{{$t('global.about')}}</router-link>
+                    <router-link to="/about">{{$t('global.credits')}}</router-link>
                 </b-nav-item>
             </b-navbar-nav>            
 
             <b-navbar-nav class="ml-auto">
 
-                <a href="#" @click.prevent="setLanguage('en')">EN</a>
-                <a href="#" @click.prevent="setLanguage('br')">PT</a>
-                <!-- <b-nav-form>
-                <b-form-input size="sm" class="mr-sm-2" placeholder="Search"></b-form-input>
-                <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
-                </b-nav-form> -->
+                <!-- <a href="#" @click.prevent="setLanguage('en')">EN</a>
+                <a href="#" @click.prevent="setLanguage('br')">PT</a> -->
+
 
                 <b-nav-item-dropdown text="Lang" right>
                     <b-dropdown-item href="#" @click.prevent="setLanguage('en')">EN</b-dropdown-item>
@@ -56,6 +55,7 @@
 import Vue from 'vue'
 import axios from 'axios'
 import router from './router'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
 
@@ -69,54 +69,82 @@ export default {
 
     mounted (){
         this.getPokemonList()
-    },    
+    },  
+    
+    computed: {
+        ...mapGetters([
+            'isLoading'
+        ]),
+
+    },
 
     methods: {
+        ...mapActions([
+            'setLoading',
+        ]),        
 
         setLanguage( locale ) {
             Vue.i18n.set( locale )
         },
 
         selectedPokemonId ( selectedPokemonId ) {
-            console.log(selectedPokemonId);
             this.pokemonId = selectedPokemonId
-
             router.push('detail')
-
         },
 
-        async getPokemonList() {
-            var params = {
-                page: 1,
-                pageSize: 10,
-                supertype: 'pokemon'                
-            }
+        async getPokemonList( event = null ) {
+            
+            this.setLoading(true);
+
+                console.log('event:', event);
+            var params;
+
+            if ( event == null  ) {
+                params = {
+                    page: 1,
+                    pageSize: 10,
+                    supertype: 'pokemon'                
+                }
+            } 
+            
+            if (event) {
+                params = event;
+            }  
+            
+            console.log('params:', params);
 
             try {
                 const response = await axios.get('/cards', {params});
                 this.pokemons = response.data.cards;
                 this.sortPokemons("ASC");
+                this.setLoading(false);
+
             } catch (error) {
                 console.error(error);
             }
         },
 
-        async getPokemonByName( object ) {
-            var params = {
-                page: 1,
-                pageSize: 10,
-                name: object,
-                supertype: 'pokemon'                 
-            }
+        // async getPokemonByName( object ) {
 
-            try{
-                const response = await axios.get(`/cards`, {params});
-                this.pokemons = response.data.cards;
-                this.sortPokemons("ASC");
-            } catch (error) {
-                console.log(error);
-            }
-        },
+        //     this.setLoading(true);
+
+        //     var params = {
+        //         page: 1,
+        //         pageSize: 10,
+        //         name: object,
+        //         supertype: 'pokemon'                 
+        //     }
+
+        //     try{
+        //         const response = await axios.get(`/cards`, {params});
+        //         this.pokemons = response.data.cards;
+        //         this.sortPokemons("ASC");
+        //         this.setLoading(false);
+
+        //     } catch (error) {
+        //         console.log(error);
+        //     }
+        // },
 
         sortPokemons (sort = "ASC") {            
 

@@ -8,12 +8,16 @@
 
                     <div class="container-card">
                     
-                    <img id="types" :class="strengthSprite(pokemon.types, true)" src="https://www.w3schools.com/css/img_trans.gif" width="1" height="1">
-                    <h3 class="title">{{pokemon.name}} <span>({{pokemon.id}})</span></h3>
+                    
+                    <img v-if="pokemon.types" id="types" :class="strengthSprite(pokemon.types, true)" src="@/assets/img_trans.gif" width="1" height="1">
+                    <h4 class="title">{{pokemon.name}} 
+                        <br>
+                        <span>({{pokemon.id}})</span>
+                    </h4>
                     </div>
 
                     
-                    <b-button variant="outline-primary" @click.prevent="checkDetails(pokemon.id)">
+                    <b-button variant="success" @click.prevent="checkDetails(pokemon.id)">
                         {{$t('global.checkDetail')}}
                     </b-button>              
             </b-col>
@@ -86,7 +90,7 @@ export default {
 
     .container-card{
         display: flex;
-        margin-top: -40px;
+        margin: -30px 0 20px;
     }
 
     .bv-row{
@@ -107,17 +111,20 @@ export default {
         }
     }
 
-    h3 {
+    h3, h4 {
         margin: 40px 0 0;
     }
+
     ul {
         list-style-type: none;
         padding: 0;
     }
+
     li {
         display: inline-block;
         margin: 0 10px;
     }
+
     a {
         color: #42b983;
     }

@@ -7,7 +7,8 @@
         "searchByName":"Search by name",
         "clear":"Clear",
         "sort":"Sort",
-        "checkDetail":"Check detail..."
+        "checkDetail":"Check detail...",
+        "credits":"Credits"
 
     }  
 }
