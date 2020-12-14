@@ -11,6 +11,10 @@ Foi utilizado as dependências:
 
 
 Para rodar:
-$ npm intall
+´´ npm intall ´´
 $ npm run serve 
+
+
+- Como não vi nenhuma necessidade do uso da ferramente VUEX para o desafio passado, foi criado uma página de histórico das cartas visitadas anteriormente pelo usuário. (Além do uso do controle do 'Loading').
+
 
