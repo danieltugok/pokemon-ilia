@@ -12,7 +12,9 @@ Foi utilizado as dependências:
 
 Para rodar o projeto precisa do NPM instalado.
 A partir disso, rodar os seguintes codigos no terminal:
+
 ``` npm intall ```
+
 ```  npm run serve ```
 
 
